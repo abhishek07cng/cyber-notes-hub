@@ -95,9 +95,23 @@ function Home() {
                 </span>
               ))}
             </div>
-            <div className="flex justify-between text-xs text-zinc-500">
+            <div className="flex justify-between items-center text-xs text-zinc-500">
+
               <span>{note.category}</span>
+
+              <span
+                className={`px-2 py-1 rounded text-xs font-medium ${note.difficulty === "Beginner"
+                    ? "bg-green-900 text-green-400"
+                    : note.difficulty === "Intermediate"
+                      ? "bg-yellow-900 text-yellow-400"
+                      : "bg-red-900 text-red-400"
+                  }`}
+              >
+                {note.difficulty}
+              </span>
+
               <span>{new Date(note.createdAt).toLocaleDateString()}</span>
+
             </div>
           </Link>
         ))}

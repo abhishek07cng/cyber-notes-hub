@@ -27,13 +27,18 @@ function NoteDetails() {
 
   return (
     <div className="max-w-3xl">
+
+      {/* Title */}
       <h1 className="text-3xl font-bold text-green-400 mb-4">
         {note.title}
       </h1>
 
+      {/* Summary */}
       <p className="text-zinc-400 mb-6">
         {note.summary}
       </p>
+
+      {/* Tags */}
       <div className="flex flex-wrap gap-2 mb-4">
         {note.tags?.map((tag, index) => (
           <span
@@ -44,14 +49,73 @@ function NoteDetails() {
           </span>
         ))}
       </div>
-      <div className="mb-4 text-sm text-zinc-500 flex gap-4">
+
+      {/* Metadata */}
+      <div className="mb-6 text-sm text-zinc-500 flex gap-4">
         <span>Category: {note.category}</span>
         <span>Difficulty: {note.difficulty}</span>
       </div>
 
-      <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 leading-relaxed whitespace-pre-line">
-        {note.content}
-      </div>
+      {/* Concept */}
+      {note.concept && (
+        <>
+          <h2 className="text-xl font-semibold text-green-400 mb-2">
+            Concept
+          </h2>
+          <p className="text-zinc-400 mb-6 whitespace-pre-line">
+            {note.concept}
+          </p>
+        </>
+      )}
+
+      {/* Payload */}
+      {note.payload && (
+        <>
+          <h2 className="text-xl font-semibold text-green-400 mb-2">
+            Payload Example
+          </h2>
+          <pre className="bg-zinc-900 p-4 rounded border border-zinc-800 text-green-300 mb-6 overflow-x-auto">
+{note.payload}
+          </pre>
+        </>
+      )}
+
+      {/* Explanation */}
+      {note.explanation && (
+        <>
+          <h2 className="text-xl font-semibold text-green-400 mb-2">
+            Explanation
+          </h2>
+          <p className="text-zinc-400 mb-6 whitespace-pre-line">
+            {note.explanation}
+          </p>
+        </>
+      )}
+
+      {/* Mitigation */}
+      {note.mitigation && (
+        <>
+          <h2 className="text-xl font-semibold text-green-400 mb-2">
+            Mitigation
+          </h2>
+          <p className="text-zinc-400 mb-6 whitespace-pre-line">
+            {note.mitigation}
+          </p>
+        </>
+      )}
+
+      {/* References */}
+      {note.references && (
+        <>
+          <h2 className="text-xl font-semibold text-green-400 mb-2">
+            References
+          </h2>
+          <p className="text-zinc-400 whitespace-pre-line">
+            {note.references}
+          </p>
+        </>
+      )}
+
     </div>
   );
 }
