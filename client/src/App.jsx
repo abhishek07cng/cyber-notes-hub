@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import NoteDetails from "./pages/NoteDetails";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
 
 
 function App() {
@@ -59,6 +61,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/notes/:id" element={<NoteDetails />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Routes>
         </div>
 

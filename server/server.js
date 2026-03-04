@@ -120,6 +120,29 @@ app.post("/api/admin/login", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+app.get("/api/admin/me", protect, async (req, res) => {
+  try {
+    const admin = await Admin.findById(req.admin.id).select("-password");
+
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    res.status(200).json(admin);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+app.post("/api/admin/logout", (req, res) => {
+  res
+    .clearCookie("token", {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: false
+    })
+    .status(200)
+    .json({ message: "Logged out successfully" });
+});
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
