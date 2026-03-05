@@ -29,6 +29,85 @@ function Home() {
     );
   return (
     <div>
+
+      <div className="mb-12 text-center">
+
+        <h1 className="text-4xl md:text-5xl font-bold text-green-400 mb-4">
+          Abhishek Singh
+        </h1>
+
+        <h2 className="text-xl md:text-2xl text-zinc-300 mb-4">
+          Cybersecurity Learning Journal
+        </h2>
+
+        <p className="text-zinc-400 max-w-2xl mx-auto mb-6">
+          Documenting my journey in ethical hacking, vulnerability research,
+          and hands-on security labs from platforms like TryHackMe and
+          PortSwigger Web Security Academy.
+        </p>
+
+        <div className="flex justify-center gap-4 flex-wrap">
+
+          <a
+            href="https://github.com/"
+            target="_blank"
+            className="px-4 py-2 bg-zinc-900 border border-zinc-800 rounded hover:border-green-400"
+          >
+            GitHub
+          </a>
+
+          <a
+            href="https://tryhackme.com/"
+            target="_blank"
+            className="px-4 py-2 bg-zinc-900 border border-zinc-800 rounded hover:border-green-400"
+          >
+            TryHackMe
+          </a>
+
+          <a
+            href="https://linkedin.com/"
+            target="_blank"
+            className="px-4 py-2 bg-zinc-900 border border-zinc-800 rounded hover:border-green-400"
+          >
+            LinkedIn
+          </a>
+
+        </div>
+
+      </div>
+
+      <div className="mb-10">
+
+        <h2 className="text-xl font-semibold text-green-400 mb-4">
+          Currently Learning
+        </h2>
+
+        <div className="flex flex-wrap gap-3">
+
+          <span className="bg-zinc-900 border border-zinc-800 px-3 py-1 rounded text-sm text-green-400">
+            SQL Injection
+          </span>
+
+          <span className="bg-zinc-900 border border-zinc-800 px-3 py-1 rounded text-sm text-green-400">
+            Cross-Site Scripting (XSS)
+          </span>
+
+          <span className="bg-zinc-900 border border-zinc-800 px-3 py-1 rounded text-sm text-green-400">
+            JWT Attacks
+          </span>
+
+          <span className="bg-zinc-900 border border-zinc-800 px-3 py-1 rounded text-sm text-green-400">
+            Privilege Escalation
+          </span>
+
+          <span className="bg-zinc-900 border border-zinc-800 px-3 py-1 rounded text-sm text-green-400">
+            Network Enumeration
+          </span>
+
+        </div>
+
+      </div>
+      
       <input
         type="text"
         placeholder="Search research topics..."
@@ -87,12 +166,12 @@ function Home() {
             {/* TAGS */}
             <div className="flex flex-wrap gap-2 mb-3">
               {note.tags?.map((tag, index) => (
-                <span
-                  key={index}
-                  className="text-xs bg-zinc-800 px-2 py-1 rounded text-green-400"
+                <Link
+                  to={`/tags/${tag}`}
+                  className="text-xs bg-zinc-800 px-2 py-1 rounded text-green-400 hover:bg-green-900"
                 >
                   {tag}
-                </span>
+                </Link>
               ))}
             </div>
             <div className="flex justify-between items-center text-xs text-zinc-500">
@@ -101,10 +180,10 @@ function Home() {
 
               <span
                 className={`px-2 py-1 rounded text-xs font-medium ${note.difficulty === "Beginner"
-                    ? "bg-green-900 text-green-400"
-                    : note.difficulty === "Intermediate"
-                      ? "bg-yellow-900 text-yellow-400"
-                      : "bg-red-900 text-red-400"
+                  ? "bg-green-900 text-green-400"
+                  : note.difficulty === "Intermediate"
+                    ? "bg-yellow-900 text-yellow-400"
+                    : "bg-red-900 text-red-400"
                   }`}
               >
                 {note.difficulty}

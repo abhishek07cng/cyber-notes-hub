@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+
 import axios from "axios";
 
 function NoteDetails() {
@@ -74,9 +78,19 @@ function NoteDetails() {
           <h2 className="text-xl font-semibold text-green-400 mb-2">
             Payload Example
           </h2>
-          <pre className="bg-zinc-900 p-4 rounded border border-zinc-800 text-green-300 mb-6 overflow-x-auto">
-{note.payload}
-          </pre>
+          <SyntaxHighlighter
+            language="bash"
+            style={oneDark}
+            customStyle={{
+              background: "#000000",
+              color: "#00ff9c",
+              borderRadius: "10px",
+              padding: "20px",
+              fontSize: "14px",
+            }}
+          >
+            {note.payload}
+          </SyntaxHighlighter>
         </>
       )}
 

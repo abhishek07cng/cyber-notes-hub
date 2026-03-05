@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import NoteDetails from "./pages/NoteDetails";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
+import TagPage from "./pages/TagPage";
 
 
 function App() {
@@ -63,6 +64,7 @@ function App() {
             <Route path="/notes/:id" element={<NoteDetails />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/tags/:tag" element={<TagPage />} />
           </Routes>
         </div>
 
