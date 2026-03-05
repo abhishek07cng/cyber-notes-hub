@@ -12,10 +12,16 @@ require("dotenv").config();
 
 const app = express();
 
-app.use(cors({
-  origin: "http://localhost:5173", // frontend URL later
-  credentials: true
-}));
+const cors = require("cors");
+
+app.use(
+  cors({
+    origin: "https://cyber-notes-hub.vercel.app",
+    credentials: true
+  })
+);
+
+
 app.use(express.json());
 app.use(cookieParser());
 
