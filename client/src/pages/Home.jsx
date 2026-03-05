@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { ReactTyped } from "react-typed";
 
 function Home() {
   const [notes, setNotes] = useState([]);
@@ -19,7 +20,7 @@ function Home() {
 
     fetchNotes();
   }, []);
-  console.log(notes);
+
   const filteredNotes = notes
     .filter((note) =>
       category === "All" ? true : note.category === category
@@ -27,13 +28,15 @@ function Home() {
     .filter((note) =>
       note.title.toLowerCase().includes(search.toLowerCase())
     );
+
   return (
     <div>
 
+      {/* HERO SECTION */}
       <div className="mb-12 text-center">
 
         <h1 className="text-4xl md:text-5xl font-bold text-green-400 mb-4">
-          Abhishek Singh
+          Abhishek Kumar Singh
         </h1>
 
         <h2 className="text-xl md:text-2xl text-zinc-300 mb-4">
@@ -51,6 +54,7 @@ function Home() {
           <a
             href="https://github.com/"
             target="_blank"
+            rel="noopener noreferrer"
             className="px-4 py-2 bg-zinc-900 border border-zinc-800 rounded hover:border-green-400"
           >
             GitHub
@@ -59,6 +63,7 @@ function Home() {
           <a
             href="https://tryhackme.com/"
             target="_blank"
+            rel="noopener noreferrer"
             className="px-4 py-2 bg-zinc-900 border border-zinc-800 rounded hover:border-green-400"
           >
             TryHackMe
@@ -67,6 +72,7 @@ function Home() {
           <a
             href="https://linkedin.com/"
             target="_blank"
+            rel="noopener noreferrer"
             className="px-4 py-2 bg-zinc-900 border border-zinc-800 rounded hover:border-green-400"
           >
             LinkedIn
@@ -76,6 +82,56 @@ function Home() {
 
       </div>
 
+      {/* TERMINAL BANNER */}
+      <div className="mb-10 bg-black border border-zinc-800 rounded-xl p-6 font-mono text-green-400">
+
+        <p>
+          $ <ReactTyped strings={["whoami"]} typeSpeed={60} />
+        </p>
+
+        <p className="text-zinc-300 mb-3">
+          <ReactTyped
+            strings={["Abhishek Kumar Singh"]}
+            typeSpeed={40}
+            startDelay={800}
+          />
+        </p>
+
+        <p>
+          $ <ReactTyped
+            strings={["role"]}
+            typeSpeed={60}
+            startDelay={2000}
+          />
+        </p>
+
+        <p className="text-zinc-300 mb-3">
+          <ReactTyped
+            strings={["Cybersecurity Student"]}
+            typeSpeed={40}
+            startDelay={2800}
+          />
+        </p>
+
+        <p>
+          $ <ReactTyped
+            strings={["status"]}
+            typeSpeed={60}
+            startDelay={4200}
+          />
+        </p>
+
+        <p className="text-zinc-300">
+          <ReactTyped
+            strings={["Learning Ethical Hacking"]}
+            typeSpeed={40}
+            startDelay={5000}
+          />
+        </p>
+
+      </div>
+
+      {/* CURRENTLY LEARNING */}
       <div className="mb-10">
 
         <h2 className="text-xl font-semibold text-green-400 mb-4">
@@ -107,7 +163,8 @@ function Home() {
         </div>
 
       </div>
-      
+
+      {/* SEARCH */}
       <input
         type="text"
         placeholder="Search research topics..."
@@ -115,6 +172,8 @@ function Home() {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
+
+      {/* CATEGORY FILTERS */}
       <div className="flex gap-3 mb-6 flex-wrap">
 
         <button
@@ -146,16 +205,21 @@ function Home() {
         </button>
 
       </div>
+
+      {/* NOTES GRID */}
       <h1 className="text-2xl font-bold mb-6">
         Latest Research Logs
       </h1>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
         {filteredNotes.map((note) => (
           <Link
             to={`/notes/${note._id}`}
             key={note._id}
             className="bg-zinc-900 p-5 rounded-xl border border-zinc-800 hover:border-green-400 transition"
           >
+
             <h2 className="text-lg font-semibold text-green-400 mb-2">
               {note.title}
             </h2>
@@ -163,10 +227,12 @@ function Home() {
             <p className="text-zinc-400 text-sm mb-3">
               {note.summary}
             </p>
+
             {/* TAGS */}
             <div className="flex flex-wrap gap-2 mb-3">
               {note.tags?.map((tag, index) => (
                 <Link
+                  key={index}
                   to={`/tags/${tag}`}
                   className="text-xs bg-zinc-800 px-2 py-1 rounded text-green-400 hover:bg-green-900"
                 >
@@ -174,27 +240,35 @@ function Home() {
                 </Link>
               ))}
             </div>
+
+            {/* META */}
             <div className="flex justify-between items-center text-xs text-zinc-500">
 
               <span>{note.category}</span>
 
               <span
-                className={`px-2 py-1 rounded text-xs font-medium ${note.difficulty === "Beginner"
-                  ? "bg-green-900 text-green-400"
-                  : note.difficulty === "Intermediate"
+                className={`px-2 py-1 rounded text-xs font-medium ${
+                  note.difficulty === "Beginner"
+                    ? "bg-green-900 text-green-400"
+                    : note.difficulty === "Intermediate"
                     ? "bg-yellow-900 text-yellow-400"
                     : "bg-red-900 text-red-400"
-                  }`}
+                }`}
               >
                 {note.difficulty}
               </span>
 
-              <span>{new Date(note.createdAt).toLocaleDateString()}</span>
+              <span>
+                {new Date(note.createdAt).toLocaleDateString()}
+              </span>
 
             </div>
+
           </Link>
         ))}
+
       </div>
+
     </div>
   );
 }
