@@ -12,7 +12,7 @@ function NoteDetails() {
     const fetchNote = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/notes/${id}`
+          `https://cyber-notes-hub-backend.onrender.com/api/notes/${id}`
         );
         setNote(res.data);
       } catch (error) {

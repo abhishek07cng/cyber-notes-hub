@@ -9,7 +9,7 @@ function TagPage() {
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/notes");
+        const res = await axios.get("https://cyber-notes-hub-backend.onrender.com/api/notes");
 
         const filtered = res.data.filter(note =>
           note.tags?.includes(tag)

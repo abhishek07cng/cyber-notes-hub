@@ -11,7 +11,7 @@ function AdminLogin() {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:5000/api/admin/login", {
+      await axios.post("https://cyber-notes-hub-backend.onrender.com/api/admin/login", {
         email,
         password,
       });

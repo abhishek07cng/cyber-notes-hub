@@ -11,7 +11,7 @@ function Home() {
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/notes");
+        const res = await axios.get("https://cyber-notes-hub-backend.onrender.com/api/notes");
         setNotes(res.data);
       } catch (error) {
         console.error(error);

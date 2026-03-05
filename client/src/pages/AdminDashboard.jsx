@@ -26,9 +26,9 @@ function AdminDashboard() {
   useEffect(() => {
     const checkAuthAndFetchNotes = async () => {
       try {
-        await axios.get("http://localhost:5000/api/admin/me");
+        await axios.get("https://cyber-notes-hub-backend.onrender.com/api/admin/me");
 
-        const res = await axios.get("http://localhost:5000/api/notes");
+        const res = await axios.get("https://cyber-notes-hub-backend.onrender.com/api/notes");
         setNotes(res.data);
       } catch (error) {
         navigate("/admin/login");
@@ -40,7 +40,7 @@ function AdminDashboard() {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:5000/api/admin/logout");
+      await axios.post("https://cyber-notes-hub-backend.onrender.com/api/admin/logout");
       navigate("/admin/login");
     } catch (error) {
       alert("Logout failed");
@@ -49,7 +49,7 @@ function AdminDashboard() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/notes/${id}`);
+      await axios.delete(`https://cyber-notes-hub-backend.onrender.com/api/notes/${id}`);
       setNotes(notes.filter((note) => note._id !== id));
     } catch (error) {
       alert("Delete failed");
@@ -80,7 +80,7 @@ function AdminDashboard() {
     try {
       if (editNoteId) {
         const res = await axios.put(
-          `http://localhost:5000/api/notes/${editNoteId}`,
+          `https://cyber-notes-hub-backend.onrender.com/api/notes/${editNoteId}`,
           formData
         );
 
@@ -93,7 +93,7 @@ function AdminDashboard() {
         setEditNoteId(null);
       } else {
         const res = await axios.post(
-          "http://localhost:5000/api/notes",
+          "https://cyber-notes-hub-backend.onrender.com/api/notes",
           formData
         );
 
