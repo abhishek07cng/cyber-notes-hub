@@ -99,7 +99,9 @@ function NoteDetails() {
                 marginBottom: "20px"
               }}
             >
-              {note.payload}
+              <button onClick={() => navigator.clipboard.writeText(note.payload)}>
+                Copy
+              </button>
             </SyntaxHighlighter>
           </>
         )}
