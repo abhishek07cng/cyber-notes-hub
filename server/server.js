@@ -84,11 +84,32 @@ app.get("/api/notes/:id", async (req, res) => {
 });
 app.put("/api/notes/:id", protect, async (req, res) => {
   try {
-    const { title, summary, content, category, tags, difficulty, platform } =
-      req.body;
+    const {
+      title,
+      summary,
+      category,
+      difficulty,
+      tags,
+      concept,
+      payload,
+      explanation,
+      mitigation,
+      references,
+    } = req.body;
     const updateNote = await Note.findByIdAndUpdate(
       req.params.id,
-      { title, summary, content, category, tags, difficulty, platform },
+      {
+        title,
+        summary,
+        category,
+        difficulty,
+        tags,
+        concept,
+        payload,
+        explanation,
+        mitigation,
+        references,
+      },
       { new: true, runValidators: true },
     );
     if (!updateNote) {
