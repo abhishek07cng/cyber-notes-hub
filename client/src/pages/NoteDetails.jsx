@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import axios from "axios";
+import ReactMarkdown from "react-markdown"
 
 function NoteDetails() {
   const { id } = useParams();
@@ -35,12 +36,12 @@ function NoteDetails() {
 
         {/* Title */}
         <h1 className="text-3xl font-bold text-green-400 mb-4">
-          {note.title}
+          <ReactMarkdown>{note.title}</ReactMarkdown>
         </h1>
 
         {/* Summary */}
         <p className="text-zinc-400 mb-6">
-          {note.summary}
+          <ReactMarkdown>{note.summary}</ReactMarkdown>
         </p>
 
         {/* Tags */}

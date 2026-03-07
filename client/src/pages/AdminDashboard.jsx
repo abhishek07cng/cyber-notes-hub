@@ -26,9 +26,20 @@ function AdminDashboard() {
   useEffect(() => {
     const checkAuthAndFetchNotes = async () => {
       try {
-        await axios.get("https://cyber-notes-hub-backend.onrender.com/api/admin/me");
+        const auth = await axios.get(
+          "https://cyber-notes-hub-backend.onrender.com/api/admin/me",
+          { withCredentials: true }
+        );
 
-        const res = await axios.get("https://cyber-notes-hub-backend.onrender.com/api/notes");
+        if (!auth.data) {
+          navigate("/admin/login");
+          return;
+        }
+
+        const res = await axios.get(
+          "https://cyber-notes-hub-backend.onrender.com/api/notes"
+        );
+
         setNotes(res.data);
       } catch (error) {
         navigate("/admin/login");
@@ -40,7 +51,10 @@ function AdminDashboard() {
 
   const handleLogout = async () => {
     try {
-      await axios.post("https://cyber-notes-hub-backend.onrender.com/api/admin/logout");
+      await axios.post("https://cyber-notes-hub-backend.onrender.com/api/admin/logout",
+        {},
+        { withCredentials: true }
+      );
       navigate("/admin/login");
     } catch (error) {
       alert("Logout failed");
@@ -49,7 +63,9 @@ function AdminDashboard() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://cyber-notes-hub-backend.onrender.com/api/notes/${id}`);
+      await axios.delete(`https://cyber-notes-hub-backend.onrender.com/api/notes/${id}`,
+        { withCredentials: true }
+      );
       setNotes(notes.filter((note) => note._id !== id));
     } catch (error) {
       alert("Delete failed");
@@ -81,7 +97,8 @@ function AdminDashboard() {
       if (editNoteId) {
         const res = await axios.put(
           `https://cyber-notes-hub-backend.onrender.com/api/notes/${editNoteId}`,
-          formData
+          formData,
+          { withCredentials: true }
         );
 
         setNotes(
@@ -94,7 +111,8 @@ function AdminDashboard() {
       } else {
         const res = await axios.post(
           "https://cyber-notes-hub-backend.onrender.com/api/notes",
-          formData
+          formData,
+          { withCredentials: true }
         );
 
         setNotes([res.data, ...notes]);

@@ -12,21 +12,16 @@ require("dotenv").config();
 
 const app = express();
 
-
+app.use(express.json());
+app.use(cookieParser());
+app.set("trust proxy", 1);
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://cyber-notes-hub.vercel.app"
-    ],
-    credentials: true
-  })
+    origin: ["http://localhost:5173", "https://cyber-notes-hub.vercel.app"],
+    credentials: true,
+  }),
 );
-
-
-app.use(express.json());
-app.use(cookieParser());
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -105,30 +100,36 @@ app.delete("/api/notes/:id", protect, async (req, res) => {
 app.post("/api/admin/login", async (req, res) => {
   try {
     const { email, password } = req.body;
+
     const admin = await Admin.findOne({ email });
     if (!admin) {
       return res.status(400).json({ message: "Invalid Credentials" });
     }
+
     const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid Credentials" });
     }
+
     const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
-    res
-      .cookie("token", token, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "strict",
-        maxAge: 24 * 60 * 60 * 1000, // 1 day
-      })
-      .status(200)
-      .json({ message: "Login successful" });
+
+    // IMPORTANT: For cross-origin cookies (Vercel ↔ Render)
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      path: "/",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    res.status(200).json({ message: "Login successful" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
+
 app.get("/api/admin/me", protect, async (req, res) => {
   try {
     const admin = await Admin.findById(req.admin.id).select("-password");
@@ -142,15 +143,16 @@ app.get("/api/admin/me", protect, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
 app.post("/api/admin/logout", (req, res) => {
-  res
-    .clearCookie("token", {
-      httpOnly: true,
-      sameSite: "strict",
-      secure: false
-    })
-    .status(200)
-    .json({ message: "Logged out successfully" });
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+  });
+
+  res.status(200).json({ message: "Logged out successfully" });
 });
 const PORT = process.env.PORT || 5000;
 

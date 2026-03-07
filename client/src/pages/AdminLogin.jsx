@@ -14,7 +14,9 @@ function AdminLogin() {
       await axios.post("https://cyber-notes-hub-backend.onrender.com/api/admin/login", {
         email,
         password,
-      });
+      },
+        { withCredentials: true }
+      );
 
       navigate("/admin/dashboard");
     } catch (error) {
