@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import axios from "axios";
-import ReactMarkdown from "react-markdown"
+import ReactMarkdown from "react-markdown";
 
 function NoteDetails() {
   const { id } = useParams();
@@ -24,6 +24,11 @@ function NoteDetails() {
     fetchNote();
   }, [id]);
 
+  const copyPayload = () => {
+    navigator.clipboard.writeText(note.payload);
+    alert("Payload copied!");
+  };
+
   if (!note) {
     return <p className="text-zinc-400">Loading...</p>;
   }
@@ -40,9 +45,9 @@ function NoteDetails() {
         </h1>
 
         {/* Summary */}
-        <p className="text-zinc-400 mb-6">
+        <div className="text-zinc-400 mb-6">
           <ReactMarkdown>{note.summary}</ReactMarkdown>
-        </p>
+        </div>
 
         {/* Tags */}
         <div className="flex flex-wrap gap-2 mb-4">
@@ -65,44 +70,44 @@ function NoteDetails() {
         {/* Concept */}
         {note.concept && (
           <>
-            <h2
-              id="concept"
-              className="text-xl font-semibold text-green-400 mb-2"
-            >
+            <h2 id="concept" className="text-xl font-semibold text-green-400 mb-2">
               Concept
             </h2>
 
-            <p className="text-zinc-400 mb-6 whitespace-pre-line">
-              {note.concept}
-            </p>
+            <div className="text-zinc-400 mb-6">
+              <ReactMarkdown>{note.concept}</ReactMarkdown>
+            </div>
           </>
         )}
 
         {/* Payload */}
         {note.payload && (
           <>
-            <h2
-              id="payload"
-              className="text-xl font-semibold text-green-400 mb-2"
-            >
-              Payload Example
-            </h2>
+            <div className="flex justify-between items-center mb-2">
+              <h2 id="payload" className="text-xl font-semibold text-green-400">
+                Payload
+              </h2>
+
+              <button
+                onClick={copyPayload}
+                className="text-xs bg-zinc-800 px-3 py-1 rounded hover:bg-zinc-700"
+              >
+                Copy
+              </button>
+            </div>
 
             <SyntaxHighlighter
               language="bash"
               style={oneDark}
               customStyle={{
                 background: "#000000",
-                color: "#00ff9c",
                 borderRadius: "10px",
                 padding: "20px",
                 fontSize: "14px",
                 marginBottom: "20px"
               }}
             >
-              <button onClick={() => navigator.clipboard.writeText(note.payload)}>
-                Copy
-              </button>
+              {note.payload}
             </SyntaxHighlighter>
           </>
         )}
@@ -110,48 +115,39 @@ function NoteDetails() {
         {/* Explanation */}
         {note.explanation && (
           <>
-            <h2
-              id="explanation"
-              className="text-xl font-semibold text-green-400 mb-2"
-            >
+            <h2 id="explanation" className="text-xl font-semibold text-green-400 mb-2">
               Explanation
             </h2>
 
-            <p className="text-zinc-400 mb-6 whitespace-pre-line">
-              {note.explanation}
-            </p>
+            <div className="text-zinc-400 mb-6">
+              <ReactMarkdown>{note.explanation}</ReactMarkdown>
+            </div>
           </>
         )}
 
         {/* Mitigation */}
         {note.mitigation && (
           <>
-            <h2
-              id="mitigation"
-              className="text-xl font-semibold text-green-400 mb-2"
-            >
+            <h2 id="mitigation" className="text-xl font-semibold text-green-400 mb-2">
               Mitigation
             </h2>
 
-            <p className="text-zinc-400 mb-6 whitespace-pre-line">
-              {note.mitigation}
-            </p>
+            <div className="text-zinc-400 mb-6">
+              <ReactMarkdown>{note.mitigation}</ReactMarkdown>
+            </div>
           </>
         )}
 
         {/* References */}
         {note.references && (
           <>
-            <h2
-              id="references"
-              className="text-xl font-semibold text-green-400 mb-2"
-            >
+            <h2 id="references" className="text-xl font-semibold text-green-400 mb-2">
               References
             </h2>
 
-            <p className="text-zinc-400 whitespace-pre-line">
-              {note.references}
-            </p>
+            <div className="text-zinc-400 mb-6">
+              <ReactMarkdown>{note.references}</ReactMarkdown>
+            </div>
           </>
         )}
 

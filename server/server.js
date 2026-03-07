@@ -33,16 +33,29 @@ app.get("/", (req, res) => {
 });
 app.post("/api/notes", protect, async (req, res) => {
   try {
-    const { title, summary, content, category, tags, difficulty, platform } =
-      req.body;
+    const {
+      title,
+      summary,
+      category,
+      difficulty,
+      tags,
+      concept,
+      payload,
+      explanation,
+      mitigation,
+      references,
+    } = req.body;
     const newNote = new Note({
       title,
       summary,
-      content,
       category,
-      tags,
       difficulty,
-      platform,
+      tags,
+      concept,
+      payload,
+      explanation,
+      mitigation,
+      references,
     });
     const savedNote = await newNote.save();
     res.status(201).json(savedNote);
