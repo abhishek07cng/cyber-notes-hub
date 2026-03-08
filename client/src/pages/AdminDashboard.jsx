@@ -15,6 +15,7 @@ function AdminDashboard() {
     summary: "",
     category: "",
     difficulty: "Beginner",
+    order: 0,
     tags: [],
     concept: "",
     payload: "",
@@ -81,6 +82,7 @@ function AdminDashboard() {
       summary: note.summary,
       category: note.category,
       difficulty: note.difficulty,
+      order: note.order || 0,
       tags: note.tags || [],
       concept: note.concept || "",
       payload: note.payload || "",
@@ -115,7 +117,7 @@ function AdminDashboard() {
           { withCredentials: true }
         );
 
-        setNotes([res.data, ...notes]);
+        setNotes([...notes, res.data].sort((a,b)=>a.order-b.order));
       }
 
       setShowForm(false);
@@ -125,6 +127,7 @@ function AdminDashboard() {
         summary: "",
         category: "",
         difficulty: "Beginner",
+        order: 0,
         tags: [],
         concept: "",
         payload: "",
@@ -179,7 +182,15 @@ function AdminDashboard() {
             }
             required
           />
-
+          <input
+            type="number"
+            placeholder="Learning Order"
+            className="bg-zinc-800 p-3 rounded"
+            value={formData.order}
+            onChange={(e) =>
+              setFormData({ ...formData, order: Number(e.target.value) })
+            }
+          />
           <input
             type="text"
             placeholder="Summary"
@@ -293,6 +304,7 @@ function AdminDashboard() {
         <table className="w-full border border-zinc-800">
           <thead className="bg-zinc-900">
             <tr className="text-left text-sm text-zinc-400">
+              <th className="p-3">Order</th>
               <th className="p-3">Title</th>
               <th className="p-3">Category</th>
               <th className="p-3">Difficulty</th>
@@ -307,6 +319,7 @@ function AdminDashboard() {
                 key={note._id}
                 className="border-t border-zinc-800 hover:bg-zinc-900"
               >
+                <td className="p-3">{note.order ?? 0}</td>
                 <td className="p-3">{note.title}</td>
                 <td className="p-3">{note.category}</td>
                 <td className="p-3">{note.difficulty}</td>

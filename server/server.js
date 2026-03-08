@@ -38,6 +38,7 @@ app.post("/api/notes", protect, async (req, res) => {
       summary,
       category,
       difficulty,
+      order,
       tags,
       concept,
       payload,
@@ -50,6 +51,7 @@ app.post("/api/notes", protect, async (req, res) => {
       summary,
       category,
       difficulty,
+      order,
       tags,
       concept,
       payload,
@@ -65,7 +67,7 @@ app.post("/api/notes", protect, async (req, res) => {
 });
 app.get("/api/notes", async (req, res) => {
   try {
-    const notes = await Note.find().sort({ createdAt: -1 });
+    const notes = await Note.find().sort({ order:1 });
     res.status(200).json(notes);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -89,6 +91,7 @@ app.put("/api/notes/:id", protect, async (req, res) => {
       summary,
       category,
       difficulty,
+      order,
       tags,
       concept,
       payload,
@@ -103,6 +106,7 @@ app.put("/api/notes/:id", protect, async (req, res) => {
         summary,
         category,
         difficulty,
+        order,
         tags,
         concept,
         payload,
