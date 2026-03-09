@@ -8,6 +8,7 @@ import TagPage from "./pages/TagPage";
 import { Link } from "react-router-dom";
 import CategoryPage from "./pages/CategoryPage";
 import Footer from "./components/Footer";
+import TopicPage from "./pages/TopicPage";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -96,6 +97,7 @@ function App() {
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/tags/:tag" element={<TagPage />} />
             <Route path="/category/:category" element={<CategoryPage />} />
+            <Route path="/topic/:topic" element={<TopicPage />} />
           </Routes>
           <Footer />
         </div>

@@ -1,57 +1,91 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
 
 function NoteDetails() {
+
   const { id } = useParams();
+
   const [note, setNote] = useState(null);
+  const [allNotes, setAllNotes] = useState([]);
 
   useEffect(() => {
-    const fetchNote = async () => {
+
+    const fetchData = async () => {
+
       try {
-        const res = await axios.get(
+
+        const noteRes = await axios.get(
           `https://cyber-notes-hub-backend.onrender.com/api/notes/${id}`
         );
-        setNote(res.data);
+
+        setNote(noteRes.data);
+
+        const allRes = await axios.get(
+          "https://cyber-notes-hub-backend.onrender.com/api/notes"
+        );
+
+        setAllNotes(allRes.data);
+
       } catch (error) {
         console.error(error);
       }
+
     };
 
-    fetchNote();
+    fetchData();
+
   }, [id]);
+
+
+  if (!note) {
+    return <p className="text-zinc-400">Loading...</p>;
+  }
+
+
+  // -------- LESSON NAVIGATION --------
+
+  const topicNotes = allNotes
+    .filter(n => n.topic === note.topic)
+    .sort((a,b)=>a.order-b.order);
+
+  const currentIndex = topicNotes.findIndex(n => n._id === note._id);
+
+  const prevNote = topicNotes[currentIndex - 1];
+  const nextNote = topicNotes[currentIndex + 1];
+
 
   const copyPayload = () => {
     navigator.clipboard.writeText(note.payload);
     alert("Payload copied!");
   };
 
-  if (!note) {
-    return <p className="text-zinc-400">Loading...</p>;
-  }
 
   return (
+
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
 
       {/* MAIN CONTENT */}
       <div className="lg:col-span-3">
 
-        {/* Title */}
+        {/* TITLE */}
         <h1 className="text-3xl font-bold text-green-400 mb-4">
           <ReactMarkdown>{note.title}</ReactMarkdown>
         </h1>
 
-        {/* Summary */}
+
+        {/* SUMMARY */}
         <div className="text-zinc-400 mb-6">
           <ReactMarkdown>{note.summary}</ReactMarkdown>
         </div>
 
-        {/* Tags */}
+
+        {/* TAGS */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {note.tags?.map((tag, index) => (
+          {note.tags?.map((tag,index)=>(
             <span
               key={index}
               className="text-xs bg-zinc-800 px-2 py-1 rounded text-green-400"
@@ -61,13 +95,17 @@ function NoteDetails() {
           ))}
         </div>
 
-        {/* Metadata */}
+
+        {/* META */}
         <div className="mb-6 text-sm text-zinc-500 flex gap-4">
           <span>Category: {note.category}</span>
+          <span>Topic: {note.topic}</span>
           <span>Difficulty: {note.difficulty}</span>
         </div>
 
-        {/* Concept */}
+
+
+        {/* CONCEPT */}
         {note.concept && (
           <>
             <h2 id="concept" className="text-xl font-semibold text-green-400 mb-2">
@@ -80,10 +118,13 @@ function NoteDetails() {
           </>
         )}
 
-        {/* Payload */}
+
+
+        {/* PAYLOAD */}
         {note.payload && (
           <>
             <div className="flex justify-between items-center mb-2">
+
               <h2 id="payload" className="text-xl font-semibold text-green-400">
                 Payload
               </h2>
@@ -94,25 +135,29 @@ function NoteDetails() {
               >
                 Copy
               </button>
+
             </div>
 
             <SyntaxHighlighter
               language="bash"
               style={oneDark}
               customStyle={{
-                background: "#000000",
-                borderRadius: "10px",
-                padding: "20px",
-                fontSize: "14px",
-                marginBottom: "20px"
+                background:"#000000",
+                borderRadius:"10px",
+                padding:"20px",
+                fontSize:"14px",
+                marginBottom:"20px"
               }}
             >
               {note.payload}
             </SyntaxHighlighter>
+
           </>
         )}
 
-        {/* Explanation */}
+
+
+        {/* EXPLANATION */}
         {note.explanation && (
           <>
             <h2 id="explanation" className="text-xl font-semibold text-green-400 mb-2">
@@ -125,7 +170,9 @@ function NoteDetails() {
           </>
         )}
 
-        {/* Mitigation */}
+
+
+        {/* MITIGATION */}
         {note.mitigation && (
           <>
             <h2 id="mitigation" className="text-xl font-semibold text-green-400 mb-2">
@@ -138,7 +185,9 @@ function NoteDetails() {
           </>
         )}
 
-        {/* References */}
+
+
+        {/* REFERENCES */}
         {note.references && (
           <>
             <h2 id="references" className="text-xl font-semibold text-green-400 mb-2">
@@ -151,50 +200,108 @@ function NoteDetails() {
           </>
         )}
 
+
+
+        {/* PREVIOUS / NEXT NAVIGATION */}
+
+        <div className="flex justify-between mt-12 border-t border-zinc-800 pt-6">
+
+          {prevNote ? (
+            <Link
+              to={`/notes/${prevNote._id}`}
+              className="text-green-400 hover:text-green-300"
+            >
+              ← Previous Lesson
+              <p className="text-sm text-zinc-400">{prevNote.title}</p>
+            </Link>
+          ) : <div></div>}
+
+
+          {nextNote && (
+            <Link
+              to={`/notes/${nextNote._id}`}
+              className="text-right text-green-400 hover:text-green-300"
+            >
+              Next Lesson →
+              <p className="text-sm text-zinc-400">{nextNote.title}</p>
+            </Link>
+          )}
+
+        </div>
+
       </div>
 
-      {/* TABLE OF CONTENTS */}
+
+
+      {/* SIDEBAR */}
       <div className="hidden lg:block">
 
-        <div className="sticky top-24 bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+        <div className="sticky top-24 space-y-6">
 
-          <h3 className="text-green-400 font-semibold mb-3">
-            Contents
-          </h3>
 
-          <nav className="flex flex-col gap-2 text-sm text-zinc-400">
+          {/* TOPIC LESSONS */}
 
-            {note.concept && (
-              <a href="#concept" className="hover:text-green-400">
-                Concept
-              </a>
-            )}
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
 
-            {note.payload && (
-              <a href="#payload" className="hover:text-green-400">
-                Payload
-              </a>
-            )}
+            <h3 className="text-green-400 font-semibold mb-3">
+              {note.topic} Lessons
+            </h3>
 
-            {note.explanation && (
-              <a href="#explanation" className="hover:text-green-400">
-                Explanation
-              </a>
-            )}
+            <nav className="flex flex-col gap-2 text-sm text-zinc-400">
 
-            {note.mitigation && (
-              <a href="#mitigation" className="hover:text-green-400">
-                Mitigation
-              </a>
-            )}
+              {topicNotes.map((lesson)=>(
+                <Link
+                  key={lesson._id}
+                  to={`/notes/${lesson._id}`}
+                  className={`hover:text-green-400 ${
+                    lesson._id === note._id
+                    ? "text-green-400 font-semibold"
+                    : ""
+                  }`}
+                >
+                  {lesson.order}. {lesson.title}
+                </Link>
+              ))}
 
-            {note.references && (
-              <a href="#references" className="hover:text-green-400">
-                References
-              </a>
-            )}
+            </nav>
 
-          </nav>
+          </div>
+
+
+
+          {/* PAGE SECTIONS */}
+
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+
+            <h3 className="text-green-400 font-semibold mb-3">
+              Page Sections
+            </h3>
+
+            <nav className="flex flex-col gap-2 text-sm text-zinc-400">
+
+              {note.concept && (
+                <a href="#concept" className="hover:text-green-400">Concept</a>
+              )}
+
+              {note.payload && (
+                <a href="#payload" className="hover:text-green-400">Payload</a>
+              )}
+
+              {note.explanation && (
+                <a href="#explanation" className="hover:text-green-400">Explanation</a>
+              )}
+
+              {note.mitigation && (
+                <a href="#mitigation" className="hover:text-green-400">Mitigation</a>
+              )}
+
+              {note.references && (
+                <a href="#references" className="hover:text-green-400">References</a>
+              )}
+
+            </nav>
+
+          </div>
 
         </div>
 
@@ -202,6 +309,7 @@ function NoteDetails() {
 
     </div>
   );
+
 }
 
 export default NoteDetails;

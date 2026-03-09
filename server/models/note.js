@@ -17,9 +17,19 @@ const noteSchema = new mongoose.Schema(
       required: true,
     },
 
+    topic: {
+      type: String,
+      required: true,
+    },
+
     difficulty: {
       type: String,
       default: "Beginner",
+    },
+
+    order: {
+      type: Number,
+      default: 0,
     },
 
     tags: [String],
@@ -48,12 +58,8 @@ const noteSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    order: {
-      type: Number,
-      default: 0,
-    },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("Note", noteSchema);
