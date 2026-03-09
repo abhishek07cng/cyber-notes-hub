@@ -141,7 +141,7 @@ This structure helps create a **step-by-step cybersecurity learning path**.
 ## Clone the Repository
 
 
-git clone https://github.com/yourusername/cyber-notes-hub.git
+git clone https://github.com/abhishek07cng/cyber-notes-hub.git
 
 cd cyber-notes-hub
 
