@@ -1,73 +1,251 @@
 # Cyber Notes Hub
 
-A full-stack MERN application to document and organize cybersecurity learning, vulnerability research, and hands-on security labs.
+![React](https://img.shields.io/badge/Frontend-React-blue)
+![Node](https://img.shields.io/badge/Backend-Node.js-green)
+![MongoDB](https://img.shields.io/badge/Database-MongoDB-darkgreen)
+![License](https://img.shields.io/badge/license-Educational-lightgrey)
 
-This platform acts as a personal cybersecurity research journal where I document topics such as web security vulnerabilities, payloads, exploitation techniques, and mitigation strategies.
+A MERN stack web application for documenting and organizing cybersecurity learning notes.
 
-## Live Website
+🔗 **Live Demo:** https://cyber-notes-hub.vercel.app  
+🔗 **Backend API:** https://cyber-notes-hub-backend.onrender.com  
 
-https://cyber-notes-hub.vercel.app
+This platform allows structured learning by organizing notes into **categories, topics, and ordered lessons**, similar to documentation platforms like **PortSwigger Web Security Academy**.
 
-## Features
+It also provides an **admin dashboard** to create, edit, and manage notes.
 
-* Admin dashboard to manage research notes
-* Authentication using JWT
-* Create, edit, and delete notes
-* Categorization of security topics
-* Tag-based filtering
-* Search functionality
-* Syntax-highlighted payload examples
-* Responsive design
-* Cybersecurity-themed UI
+---
 
-## Tech Stack
+# Features
 
-Frontend
+## Learning Platform
 
-* React
-* Vite
-* Tailwind CSS
-* React Router
+- Organized cybersecurity notes
+- Category-based navigation
+- Topic-based lesson structure
+- Ordered learning path
+- Tags for quick filtering
+- Markdown support for writing notes
+- Syntax highlighting for payloads
+- Sidebar navigation for lessons
+- Previous / Next lesson navigation
 
-Backend
+---
 
-* Node.js
-* Express.js
+## Admin Dashboard
 
-Database
+- Secure admin login
+- Create new notes
+- Edit notes
+- Delete notes
+- Assign category and topic
+- Set learning order
 
-* MongoDB Atlas
+---
 
-Deployment
+## User Experience
 
-* Frontend: Vercel
-* Backend: Render
+- Responsive layout
+- Dark theme interface
+- Search notes by title
+- Category filtering
+- Tag-based navigation
 
-## Project Architecture
+---
 
-Frontend (React + Vite) → Vercel
-Backend (Node.js + Express) → Render
-Database → MongoDB Atlas
+# Tech Stack
 
-## Example Research Topics
+## Frontend
 
-* SQL Injection
-* Cross-Site Scripting (XSS)
-* JWT Attacks
-* Privilege Escalation
-* Network Enumeration
+- React
+- React Router
+- Axios
+- TailwindCSS
+- React Markdown
+- React Syntax Highlighter
 
-## Author
+## Backend
 
-Abhishek Kumar Singh
-Cybersecurity Enthusiast | B.Tech CSE Student
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT Authentication
+- Cookie-based session handling
 
-This project documents my learning journey in ethical hacking, vulnerability research, and practical cybersecurity labs.
+## Deployment
 
-## Future Improvements
+- Frontend: **Vercel**
+- Backend: **Render**
+- Database: **MongoDB Atlas**
 
-* Markdown support for writing research notes
-* Code splitting for performance optimization
-* Better search and filtering
-* User accounts for multiple researchers
-* Integration with security lab platforms
+---
+
+# Project Structure
+
+
+cyber-notes-hub
+│
+├── backend
+│ ├── models
+│ │ ├── note.js
+│ │ └── admin.js
+│ │
+│ ├── middleware
+│ │ └── authMiddleware.js
+│ │
+│ └── server.js
+│
+├── frontend
+│ ├── pages
+│ │ ├── Home.jsx
+│ │ ├── NoteDetails.jsx
+│ │ ├── AdminDashboard.jsx
+│ │ ├── AdminLogin.jsx
+│ │ ├── CategoryPage.jsx
+│ │ └── TagPage.jsx
+│ │
+│ ├── components
+│ │ └── Footer.jsx
+│ │
+│ └── App.jsx
+
+
+---
+
+# Learning Structure
+
+Notes are organized as:
+
+
+Category → Topic → Ordered Lessons
+
+
+Example:
+
+
+Web Security
+└ SQL Injection
+1 What is SQL Injection
+2 Detecting SQL Injection
+3 Retrieving Hidden Data
+4 Authentication Bypass
+
+
+This structure helps create a **step-by-step cybersecurity learning path**.
+
+---
+
+# Installation
+
+## Clone the Repository
+
+
+git clone https://github.com/yourusername/cyber-notes-hub.git
+
+cd cyber-notes-hub
+
+
+---
+
+# Backend Setup
+
+
+cd backend
+npm install
+
+
+Create `.env` file:
+
+
+MONGO_URI=your_mongodb_connection
+JWT_SECRET=your_secret_key
+
+
+Run backend server:
+
+
+npm start
+
+
+---
+
+# Frontend Setup
+
+
+cd frontend
+npm install
+npm run dev
+
+
+The frontend will run on:
+
+
+http://localhost:5173
+
+
+---
+
+# Admin Access
+
+Admin authentication is required to manage notes.
+
+Admin can:
+
+- Create new notes
+- Edit existing notes
+- Delete notes
+- Organize lessons by order
+- Manage categories and topics
+
+---
+
+# Example Note Structure
+
+Example note entry:
+
+
+Title: Authentication Bypass
+
+Category: Web Security
+
+Topic: SQL Injection
+
+Order: 4
+
+
+Content sections include:
+
+- Concept
+- Payload
+- Explanation
+- Mitigation
+- References
+
+---
+
+# Future Improvements
+
+Possible enhancements for the platform:
+
+- Learning progress tracker
+- Full-text search
+- Estimated reading time
+- Auto table of contents from markdown headings
+- User accounts for learners
+- Bookmark system
+- Note bookmarking / favorites
+
+---
+
+# Author
+
+**Abhishek Kumar Singh**
+
+Cybersecurity student documenting hands-on learning in ethical hacking, vulnerability research, and security labs.
+
+---
+
+# License
+
+This project is for **educational and learning purposes**.
