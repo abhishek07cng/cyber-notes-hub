@@ -4,6 +4,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
+import remarkBreaks from "remark-breaks";
 
 function NoteDetails() {
 
@@ -73,13 +74,17 @@ function NoteDetails() {
 
         {/* TITLE */}
         <h1 className="text-3xl font-bold text-green-400 mb-4">
-          <ReactMarkdown>{note.title}</ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+            {note.title}
+          </ReactMarkdown>
         </h1>
 
 
         {/* SUMMARY */}
         <div className="text-zinc-400 mb-6">
-          <ReactMarkdown>{note.summary}</ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+            {note.summary}
+          </ReactMarkdown>
         </div>
 
 
@@ -113,7 +118,9 @@ function NoteDetails() {
             </h2>
 
             <div className="text-zinc-400 mb-6">
-              <ReactMarkdown>{note.concept}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+                {note.concept}
+              </ReactMarkdown>
             </div>
           </>
         )}
@@ -165,7 +172,9 @@ function NoteDetails() {
             </h2>
 
             <div className="text-zinc-400 mb-6">
-              <ReactMarkdown>{note.explanation}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+                {note.explanation}
+              </ReactMarkdown>
             </div>
           </>
         )}
@@ -180,7 +189,9 @@ function NoteDetails() {
             </h2>
 
             <div className="text-zinc-400 mb-6">
-              <ReactMarkdown>{note.mitigation}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+                {note.mitigation}
+              </ReactMarkdown>
             </div>
           </>
         )}
@@ -195,7 +206,9 @@ function NoteDetails() {
             </h2>
 
             <div className="text-zinc-400 mb-6">
-              <ReactMarkdown>{note.references}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+                {note.references}
+              </ReactMarkdown>
             </div>
           </>
         )}
