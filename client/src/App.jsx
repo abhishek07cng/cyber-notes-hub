@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import NoteDetails from "./pages/NoteDetails";
@@ -12,12 +11,10 @@ import TopicPage from "./pages/TopicPage";
 import AppShell from "./components/layout/AppShell";
 
 function App() {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
     <AppShell
       sidebar={
-        <div className="hidden md:flex md:w-64 bg-zinc-900 border-r border-zinc-800 flex-col p-6 sticky top-0 h-screen">
+        <div className="flex h-full flex-col p-6">
         <h2 className="text-xl font-bold text-green-400 mb-8">
           Security Journal
         </h2>
@@ -47,56 +44,16 @@ function App() {
         </div>
       }
     >
-      {/* Navbar (Mobile) */}
-      <div className="md:hidden flex items-center justify-between p-4 bg-zinc-900 border-b border-zinc-800">
-          <h2 className="text-lg font-bold text-green-400">
-            Security Journal
-          </h2>
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="text-green-400"
-          >
-            ☰
-          </button>
-      </div>
-
-      {/* Mobile Sidebar */}
-      {isOpen && (
-        <div className="md:hidden bg-zinc-900 p-4 border-b border-zinc-800">
-          <nav className="flex flex-col gap-3 text-sm">
-            <Link to="/" className="hover:text-green-400">Dashboard</Link>
-            <Link to="/category/web-security" className="hover:text-green-400">
-              Web Security
-            </Link>
-
-            <Link to="/category/network-security" className="hover:text-green-400">
-              Network Security
-            </Link>
-
-            <Link to="/category/system-exploitation" className="hover:text-green-400">
-              System Exploitation
-            </Link>
-
-            <Link to="/category/secure-coding" className="hover:text-green-400">
-              Secure Coding
-            </Link>
-          </nav>
-        </div>
-      )}
-
-      {/* Page Content */}
-      <div className="flex-1 p-6">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/notes/:id" element={<NoteDetails />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/tags/:tag" element={<TagPage />} />
-          <Route path="/category/:category" element={<CategoryPage />} />
-          <Route path="/topic/:topic" element={<TopicPage />} />
-        </Routes>
-        <Footer />
-      </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/notes/:id" element={<NoteDetails />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/tags/:tag" element={<TagPage />} />
+        <Route path="/category/:category" element={<CategoryPage />} />
+        <Route path="/topic/:topic" element={<TopicPage />} />
+      </Routes>
+      <Footer />
     </AppShell>
   );
 }
