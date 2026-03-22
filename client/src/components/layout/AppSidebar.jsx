@@ -69,32 +69,42 @@ const CATEGORY_ICONS = {
 
 function navItemClass({ isActive, collapsed }) {
   const base =
-    "flex items-center gap-3 rounded-lg text-sm font-medium transition-[color,background-color,box-shadow] duration-200 ease-out outline-none focus-visible:ring-2 focus-visible:ring-[var(--cnh-accent-dim)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--cnh-surface)]";
-  const pad = collapsed ? "justify-center px-2 py-2.5" : "px-3 py-2.5";
+    "group relative flex items-center gap-3 rounded-lg border-l-2 border-transparent text-[0.8125rem] font-medium leading-snug tracking-wide outline-none transition-[color,background-color,border-color,box-shadow,transform] duration-200 ease-out motion-reduce:transition-none focus-visible:ring-2 focus-visible:ring-[var(--cnh-accent-dim)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--cnh-surface)]";
+  const pad = collapsed ? "justify-center px-2 py-3" : "px-3 py-3";
   const active = isActive
-    ? "bg-[color-mix(in_srgb,var(--cnh-accent)_14%,transparent)] text-[var(--cnh-accent)] shadow-[inset_3px_0_0_var(--cnh-accent)]"
-    : "text-[var(--cnh-text-muted)] hover:bg-[var(--cnh-surface-elevated)] hover:text-[var(--cnh-accent)]";
+    ? "border-[var(--cnh-accent)] bg-[color-mix(in_srgb,var(--cnh-accent)_18%,transparent)] text-[var(--cnh-accent)] shadow-[inset_0_1px_0_0_color-mix(in_srgb,var(--cnh-accent)_20%,transparent),0_0_24px_-8px_var(--cnh-accent)]"
+    : "text-[var(--cnh-text-muted)] hover:-translate-x-px hover:border-[color-mix(in_srgb,var(--cnh-accent)_45%,transparent)] hover:bg-[var(--cnh-surface-elevated)] hover:text-[var(--cnh-accent)] hover:shadow-[0_0_18px_-10px_var(--cnh-glow)] motion-reduce:hover:translate-x-0";
   return `${base} ${pad} ${active}`;
+}
+
+function navIconClass(isActive) {
+  const base =
+    "h-5 w-5 shrink-0 transition-[color,transform,opacity] duration-200 ease-out motion-reduce:transition-none";
+  return isActive
+    ? `${base} text-[var(--cnh-accent)] opacity-100`
+    : `${base} text-[var(--cnh-text-dim)] opacity-90 group-hover:scale-[1.04] group-hover:text-[var(--cnh-accent)] group-hover:opacity-100 motion-reduce:group-hover:scale-100`;
 }
 
 export default function AppSidebar({ collapsed }) {
   return (
     <div
       className={`flex h-full min-h-0 w-full flex-col border-[var(--cnh-border)] md:border-0 ${
-        collapsed ? "px-2 py-4" : "p-4"
+        collapsed ? "px-2 py-5" : "px-4 py-5"
       }`}
     >
-      <div className={`mb-6 shrink-0 ${collapsed ? "flex justify-center" : ""}`}>
+      <div className={`mb-8 shrink-0 ${collapsed ? "flex justify-center" : ""}`}>
         <Link
           to="/"
           title="Cyber Notes Hub — Home"
-          className={`flex items-center gap-2 rounded-lg px-1 py-1 text-[var(--cnh-accent)] transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cnh-accent-dim)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--cnh-surface)] ${
+          className={`flex items-center gap-2.5 rounded-xl px-1 py-1.5 text-[var(--cnh-accent)] transition-[opacity,box-shadow] duration-200 ease-out motion-reduce:transition-none hover:opacity-95 hover:shadow-[0_0_20px_-12px_var(--cnh-glow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cnh-accent-dim)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--cnh-surface)] ${
             collapsed ? "justify-center p-2" : ""
           }`}
         >
-          <IconHub className="h-8 w-8 shrink-0" />
+          <IconHub className="h-8 w-8 shrink-0 drop-shadow-[0_0_10px_var(--cnh-glow)]" />
           {!collapsed ? (
-            <span className="font-semibold tracking-tight">Cyber Notes Hub</span>
+            <span className="text-base font-semibold leading-tight tracking-tight">
+              Cyber Notes Hub
+            </span>
           ) : (
             <span className="sr-only">Cyber Notes Hub</span>
           )}
@@ -102,22 +112,26 @@ export default function AppSidebar({ collapsed }) {
       </div>
 
       <p
-        className={`mb-3 text-[10px] font-semibold uppercase tracking-widest text-[var(--cnh-text-dim)] ${
+        className={`mb-4 px-0.5 text-[11px] font-semibold uppercase leading-none tracking-[0.18em] text-[var(--cnh-text-dim)] ${
           collapsed ? "sr-only" : ""
         }`}
       >
         Categories
       </p>
 
-      <nav className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto" aria-label="Sidebar">
+      <nav className="flex min-h-0 flex-1 flex-col gap-1.5 overflow-y-auto pr-0.5" aria-label="Sidebar">
         <NavLink
           to="/"
           end
           title="Dashboard"
           className={({ isActive }) => navItemClass({ isActive, collapsed })}
         >
-          <IconDashboard className="h-5 w-5 shrink-0 opacity-90" />
-          <span className={collapsed ? "sr-only" : ""}>Dashboard</span>
+          {({ isActive }) => (
+            <>
+              <IconDashboard className={navIconClass(isActive)} />
+              <span className={collapsed ? "sr-only" : ""}>Dashboard</span>
+            </>
+          )}
         </NavLink>
 
         {NAV_CATEGORIES.map((c) => {
@@ -129,8 +143,12 @@ export default function AppSidebar({ collapsed }) {
               title={c.label}
               className={({ isActive }) => navItemClass({ isActive, collapsed })}
             >
-              <Icon className="h-5 w-5 shrink-0 opacity-90" />
-              <span className={collapsed ? "sr-only" : ""}>{c.label}</span>
+              {({ isActive }) => (
+                <>
+                  <Icon className={navIconClass(isActive)} />
+                  <span className={collapsed ? "sr-only" : ""}>{c.label}</span>
+                </>
+              )}
             </NavLink>
           );
         })}
