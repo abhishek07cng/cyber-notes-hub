@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import { ReactTyped } from "react-typed";
+import NoteCard from "../components/NoteCard";
+import EmptyState from "../components/ui/EmptyState";
+import { NoteCardSkeletonGrid } from "../components/ui/NoteCardSkeleton";
 
 function Home() {
   const [notes, setNotes] = useState([]);
   const [category, setCategory] = useState("All");
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -15,6 +18,8 @@ function Home() {
         setNotes(res.data);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -211,63 +216,20 @@ function Home() {
         Latest Research Logs
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-        {filteredNotes.map((note) => (
-          <Link
-            to={`/notes/${note._id}`}
-            key={note._id}
-            className="bg-zinc-900 p-5 rounded-xl border border-zinc-800 hover:border-green-400 transition"
-          >
-
-            <h2 className="text-lg font-semibold text-green-400 mb-2">
-              {note.title}
-            </h2>
-
-            <p className="text-zinc-400 text-sm mb-3">
-              {note.summary}
-            </p>
-
-            {/* TAGS */}
-            <div className="flex flex-wrap gap-2 mb-3">
-              {note.tags?.map((tag, index) => (
-                <Link
-                  key={index}
-                  to={`/tags/${tag}`}
-                  className="text-xs bg-zinc-800 px-2 py-1 rounded text-green-400 hover:bg-green-900"
-                >
-                  {tag}
-                </Link>
-              ))}
-            </div>
-
-            {/* META */}
-            <div className="flex justify-between items-center text-xs text-zinc-500">
-
-              <span>{note.category}</span>
-
-              <span
-                className={`px-2 py-1 rounded text-xs font-medium ${
-                  note.difficulty === "Beginner"
-                    ? "bg-green-900 text-green-400"
-                    : note.difficulty === "Intermediate"
-                    ? "bg-yellow-900 text-yellow-400"
-                    : "bg-red-900 text-red-400"
-                }`}
-              >
-                {note.difficulty}
-              </span>
-
-              <span>
-                {new Date(note.createdAt).toLocaleDateString()}
-              </span>
-
-            </div>
-
-          </Link>
-        ))}
-
-      </div>
+      {loading ? (
+        <NoteCardSkeletonGrid />
+      ) : filteredNotes.length ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredNotes.map((note) => (
+            <NoteCard key={note._id} note={note} linkTags />
+          ))}
+        </div>
+      ) : (
+        <EmptyState
+          title="No matching notes found"
+          description="Try adjusting your search text or switching category filters to discover relevant cybersecurity notes."
+        />
+      )}
 
     </div>
   );

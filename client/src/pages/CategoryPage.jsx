@@ -1,10 +1,14 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import NoteCard from "../components/NoteCard";
+import EmptyState from "../components/ui/EmptyState";
+import { NoteCardSkeletonGrid } from "../components/ui/NoteCardSkeleton";
 
 function CategoryPage() {
   const { category } = useParams();
   const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -19,6 +23,8 @@ function CategoryPage() {
         setNotes(filtered);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -31,23 +37,20 @@ function CategoryPage() {
         {category.replace("-", " ").toUpperCase()}
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {notes.map((note) => (
-          <Link
-            key={note._id}
-            to={`/notes/${note._id}`}
-            className="bg-zinc-900 p-5 rounded-xl border border-zinc-800 hover:border-green-400"
-          >
-            <h2 className="text-lg font-semibold text-green-400 mb-2">
-              {note.title}
-            </h2>
-
-            <p className="text-zinc-400 text-sm mb-3">
-              {note.summary}
-            </p>
-          </Link>
-        ))}
-      </div>
+      {loading ? (
+        <NoteCardSkeletonGrid />
+      ) : notes.length ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {notes.map((note) => (
+            <NoteCard key={note._id} note={note} showTags={false} />
+          ))}
+        </div>
+      ) : (
+        <EmptyState
+          title="No notes available in this category"
+          description="New notes will appear here once this category has published entries."
+        />
+      )}
     </div>
   );
 }
