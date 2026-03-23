@@ -4,12 +4,30 @@ import { ReactTyped } from "react-typed";
 import NoteCard from "../components/NoteCard";
 import EmptyState from "../components/ui/EmptyState";
 import { NoteCardSkeletonGrid } from "../components/ui/NoteCardSkeleton";
+import { useNoteSearch } from "../context/NoteSearchContext";
+
+function noteMatchesQuery(note, query) {
+  if (!query) return true;
+  const normalized = query.toLowerCase();
+  const searchableText = [
+    note.title,
+    note.summary,
+    note.concept,
+    note.explanation,
+    note.payload,
+    ...(note.tags || []),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+  return searchableText.includes(normalized);
+}
 
 function Home() {
   const [notes, setNotes] = useState([]);
   const [category, setCategory] = useState("All");
-  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const { searchQuery, debouncedSearchQuery } = useNoteSearch();
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -30,9 +48,7 @@ function Home() {
     .filter((note) =>
       category === "All" ? true : note.category === category
     )
-    .filter((note) =>
-      note.title.toLowerCase().includes(search.toLowerCase())
-    );
+    .filter((note) => noteMatchesQuery(note, debouncedSearchQuery));
 
   return (
     <div>
@@ -169,15 +185,6 @@ function Home() {
 
       </div>
 
-      {/* SEARCH */}
-      <input
-        type="text"
-        placeholder="Search research topics..."
-        className="mb-6 w-full bg-zinc-800 p-3 rounded text-white outline-none"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-
       {/* CATEGORY FILTERS */}
       <div className="flex gap-3 mb-6 flex-wrap">
 
@@ -226,8 +233,16 @@ function Home() {
         </div>
       ) : (
         <EmptyState
-          title="No matching notes found"
-          description="Try adjusting your search text or switching category filters to discover relevant cybersecurity notes."
+          title={
+            searchQuery
+              ? `No results found for '${searchQuery}'`
+              : "No matching notes found"
+          }
+          description={
+            searchQuery
+              ? "Try a different keyword or clear search to see more notes."
+              : "Try adjusting your category filters to discover relevant cybersecurity notes."
+          }
         />
       )}
 

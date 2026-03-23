@@ -14,6 +14,10 @@ const codeBlockStyle = {
   marginBottom: "20px",
 };
 
+const COMPLETED_NOTES_KEY = "cnh_completed_note_ids";
+
+const toSlug = (value = "") => value.toLowerCase().replace(/\s+/g, "-");
+
 function NoteDetails() {
 
   const { id } = useParams();
@@ -21,6 +25,8 @@ function NoteDetails() {
   const [note, setNote] = useState(null);
   const [allNotes, setAllNotes] = useState([]);
   const [toastMessage, setToastMessage] = useState("");
+  const [completedNoteIds, setCompletedNoteIds] = useState([]);
+  const [isPayloadCopied, setIsPayloadCopied] = useState(false);
 
   useEffect(() => {
 
@@ -50,6 +56,27 @@ function NoteDetails() {
 
   }, [id]);
 
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(COMPLETED_NOTES_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        setCompletedNoteIds(parsed);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(COMPLETED_NOTES_KEY, JSON.stringify(completedNoteIds));
+    } catch (error) {
+      console.error(error);
+    }
+  }, [completedNoteIds]);
+
 
   if (!note) {
     return <p className="text-zinc-400">Loading...</p>;
@@ -66,6 +93,11 @@ function NoteDetails() {
 
   const prevNote = topicNotes[currentIndex - 1];
   const nextNote = topicNotes[currentIndex + 1];
+  const topicCompletedCount = topicNotes.filter((n) => completedNoteIds.includes(n._id)).length;
+  const topicProgressPercent = topicNotes.length
+    ? Math.round((topicCompletedCount / topicNotes.length) * 100)
+    : 0;
+  const isCompleted = completedNoteIds.includes(note._id);
 
 
   const showCopyToast = (message) => {
@@ -85,6 +117,19 @@ function NoteDetails() {
 
   const copyPayload = () => {
     copyText(note.payload, "Payload copied");
+    setIsPayloadCopied(true);
+    setTimeout(() => setIsPayloadCopied(false), 900);
+  };
+
+  const toggleCompleted = () => {
+    setCompletedNoteIds((prev) => {
+      if (prev.includes(note._id)) {
+        showCopyToast("Marked as incomplete");
+        return prev.filter((idValue) => idValue !== note._id);
+      }
+      showCopyToast("Marked as completed");
+      return [...prev, note._id];
+    });
   };
 
   const renderMarkdown = (content) => (
@@ -145,6 +190,19 @@ function NoteDetails() {
 
       {/* MAIN CONTENT */}
       <div className="lg:col-span-3">
+        <nav className="mb-4 flex flex-wrap items-center gap-2 text-xs text-zinc-400">
+          <Link to="/" className="transition hover:text-emerald-300">Dashboard</Link>
+          <span>/</span>
+          <Link to={`/category/${toSlug(note.category)}`} className="transition hover:text-emerald-300">
+            {note.category}
+          </Link>
+          <span>/</span>
+          <Link to={`/topic/${toSlug(note.topic)}`} className="transition hover:text-emerald-300">
+            {note.topic}
+          </Link>
+          <span>/</span>
+          <span className="text-emerald-300">{note.title}</span>
+        </nav>
 
         {/* TITLE */}
         <h1 className="text-3xl font-bold text-green-400 mb-4">
@@ -178,6 +236,32 @@ function NoteDetails() {
           <span>Difficulty: {note.difficulty}</span>
         </div>
 
+        <div className="mb-7 rounded-xl border border-zinc-800 bg-zinc-900/50 p-3">
+          <div className="mb-2 flex items-center justify-between text-xs text-zinc-400">
+            <span>Topic progress</span>
+            <span>{topicCompletedCount}/{topicNotes.length} completed</span>
+          </div>
+          <div className="h-2 rounded-full bg-zinc-800">
+            <div
+              className="h-2 rounded-full bg-emerald-500 transition-all duration-300"
+              style={{ width: `${topicProgressPercent}%` }}
+            />
+          </div>
+          <div className="mt-3">
+            <button
+              type="button"
+              onClick={toggleCompleted}
+              className={`rounded-md border px-3 py-1.5 text-xs font-medium transition ${
+                isCompleted
+                  ? "border-emerald-700/70 bg-emerald-500/15 text-emerald-200 hover:bg-emerald-500/25"
+                  : "border-zinc-700 bg-zinc-900 text-zinc-200 hover:border-emerald-600 hover:text-emerald-300"
+              }`}
+            >
+              {isCompleted ? "Completed" : "Mark as Completed"}
+            </button>
+          </div>
+        </div>
+
 
 
         {/* CONCEPT */}
@@ -201,19 +285,23 @@ function NoteDetails() {
             <div className="mb-3 rounded-xl border border-zinc-800 bg-zinc-900/60 p-3">
               <div className="mb-2 flex items-center justify-between">
                 <h2 id="payload" className="text-xl font-semibold text-green-400">
-                  Quick Payload Box
+                  Exploit Payload
                 </h2>
 
                 <button
                   type="button"
                   onClick={copyPayload}
-                  className="rounded-md border border-zinc-700 bg-zinc-900 px-3 py-1 text-xs font-medium text-zinc-200 transition hover:border-emerald-600 hover:text-emerald-300"
+                  className={`rounded-md border bg-zinc-900 px-3 py-1 text-xs font-medium transition ${
+                    isPayloadCopied
+                      ? "scale-105 border-emerald-600 text-emerald-300 shadow-[0_0_16px_-6px_rgba(16,185,129,0.8)]"
+                      : "border-zinc-700 text-zinc-200 hover:border-emerald-600 hover:text-emerald-300"
+                  }`}
                 >
-                  Copy Payload
+                  {isPayloadCopied ? "Copied!" : "Copy Payload"}
                 </button>
               </div>
               <p className="text-xs text-zinc-400">
-                Click to copy the payload instantly.
+                One-click copy for rapid lab execution.
               </p>
             </div>
 
@@ -277,23 +365,23 @@ function NoteDetails() {
 
         {/* PREVIOUS / NEXT NAVIGATION */}
 
-        <div className="flex justify-between mt-12 border-t border-zinc-800 pt-6">
+        <div className="mt-12 grid grid-cols-1 gap-3 border-t border-zinc-800 pt-6 sm:grid-cols-2">
 
           {prevNote ? (
             <Link
               to={`/notes/${prevNote._id}`}
-              className="text-green-400 hover:text-green-300"
+              className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-3 text-green-400 transition hover:border-emerald-700/60 hover:text-green-300"
             >
               ← Previous Lesson
               <p className="text-sm text-zinc-400">{prevNote.title}</p>
             </Link>
-          ) : <div></div>}
+          ) : <div className="hidden sm:block" />}
 
 
           {nextNote && (
             <Link
               to={`/notes/${nextNote._id}`}
-              className="text-right text-green-400 hover:text-green-300"
+              className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-3 text-right text-green-400 transition hover:border-emerald-700/60 hover:text-green-300"
             >
               Next Lesson →
               <p className="text-sm text-zinc-400">{nextNote.title}</p>
@@ -326,13 +414,16 @@ function NoteDetails() {
                 <Link
                   key={lesson._id}
                   to={`/notes/${lesson._id}`}
-                  className={`hover:text-green-400 ${
+                  className={`flex items-center justify-between rounded-md px-2 py-1.5 transition ${
                     lesson._id === note._id
-                    ? "text-green-400 font-semibold"
-                    : ""
+                    ? "bg-emerald-500/10 text-green-300 font-semibold"
+                    : "hover:bg-zinc-800/70 hover:text-green-400"
                   }`}
                 >
-                  {lesson.order}. {lesson.title}
+                  <span>{lesson.order}. {lesson.title}</span>
+                  {completedNoteIds.includes(lesson._id) ? (
+                    <span className="ml-2 inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                  ) : null}
                 </Link>
               ))}
 

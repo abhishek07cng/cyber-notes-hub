@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
 function IconMenu({ open }) {
@@ -68,7 +69,29 @@ export default function AppNavbar({
   mobileMenuOpen,
   onSidebarCollapseToggle,
   sidebarCollapsed,
+  searchQuery,
+  onSearchQueryChange,
+  onClearSearch,
 }) {
+  const desktopSearchInputRef = useRef(null);
+  const mobileSearchInputRef = useRef(null);
+
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      const targetTag = event.target?.tagName?.toLowerCase();
+      if (targetTag === "input" || targetTag === "textarea") return;
+      if (event.key === "/") {
+        event.preventDefault();
+        const targetRef =
+          window.innerWidth >= 768 ? desktopSearchInputRef : mobileSearchInputRef;
+        targetRef.current?.focus();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
   return (
     <header
       className="sticky top-0 z-40 w-full shrink-0 border-b border-[var(--cnh-border)] bg-[color-mix(in_srgb,var(--cnh-surface)_92%,transparent)] backdrop-blur-md"
@@ -81,7 +104,28 @@ export default function AppNavbar({
           Cyber Notes Hub
         </Link>
 
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 items-center gap-2">
+          <div className="relative hidden w-72 max-w-[42vw] md:block">
+            <input
+              ref={desktopSearchInputRef}
+              type="text"
+              value={searchQuery}
+              onChange={(event) => onSearchQueryChange(event.target.value)}
+              placeholder="Search notes..."
+              className="h-9 w-full rounded-md border border-[var(--cnh-border-subtle)] bg-zinc-900/90 px-3 pr-8 text-sm text-zinc-200 outline-none transition focus:border-[var(--cnh-accent-dim)] focus:ring-2 focus:ring-emerald-500/20"
+            />
+            {searchQuery ? (
+              <button
+                type="button"
+                onClick={onClearSearch}
+                aria-label="Clear search"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded p-1 text-zinc-400 transition hover:text-emerald-300"
+              >
+                ×
+              </button>
+            ) : null}
+          </div>
+
           <button
             type="button"
             onClick={onSidebarCollapseToggle}
@@ -102,6 +146,29 @@ export default function AppNavbar({
           >
             <IconMenu open={mobileMenuOpen} />
           </button>
+        </div>
+      </div>
+
+      <div className="border-t border-zinc-800/80 px-4 py-2 md:hidden">
+        <div className="relative">
+          <input
+            ref={mobileSearchInputRef}
+            type="text"
+            value={searchQuery}
+            onChange={(event) => onSearchQueryChange(event.target.value)}
+            placeholder="Search notes..."
+            className="h-9 w-full rounded-md border border-[var(--cnh-border-subtle)] bg-zinc-900/90 px-3 pr-8 text-sm text-zinc-200 outline-none transition focus:border-[var(--cnh-accent-dim)] focus:ring-2 focus:ring-emerald-500/20"
+          />
+          {searchQuery ? (
+            <button
+              type="button"
+              onClick={onClearSearch}
+              aria-label="Clear search"
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded p-1 text-zinc-400 transition hover:text-emerald-300"
+            >
+              ×
+            </button>
+          ) : null}
         </div>
       </div>
     </header>
