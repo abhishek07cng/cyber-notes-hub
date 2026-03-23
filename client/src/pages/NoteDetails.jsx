@@ -6,12 +6,21 @@ import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import remarkBreaks from "remark-breaks";
 
+const codeBlockStyle = {
+  background: "#000000",
+  borderRadius: "10px",
+  padding: "20px",
+  fontSize: "14px",
+  marginBottom: "20px",
+};
+
 function NoteDetails() {
 
   const { id } = useParams();
 
   const [note, setNote] = useState(null);
   const [allNotes, setAllNotes] = useState([]);
+  const [toastMessage, setToastMessage] = useState("");
 
   useEffect(() => {
 
@@ -59,32 +68,93 @@ function NoteDetails() {
   const nextNote = topicNotes[currentIndex + 1];
 
 
-  const copyPayload = () => {
-    navigator.clipboard.writeText(note.payload);
-    alert("Payload copied!");
+  const showCopyToast = (message) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(""), 1800);
   };
+
+  const copyText = async (value, successMessage) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      showCopyToast(successMessage);
+    } catch (error) {
+      console.error(error);
+      showCopyToast("Copy failed");
+    }
+  };
+
+  const copyPayload = () => {
+    copyText(note.payload, "Payload copied");
+  };
+
+  const renderMarkdown = (content) => (
+    <ReactMarkdown
+      remarkPlugins={[remarkBreaks]}
+      components={{
+        code({ inline, className, children, ...props }) {
+          const languageMatch = /language-(\w+)/.exec(className || "");
+          const codeText = String(children).replace(/\n$/, "");
+
+          if (inline || !languageMatch) {
+            return (
+              <code className="rounded bg-zinc-800 px-1.5 py-0.5 text-emerald-300" {...props}>
+                {children}
+              </code>
+            );
+          }
+
+          return (
+            <div className="mb-5 overflow-hidden rounded-xl border border-zinc-800 bg-black/70">
+              <div className="flex items-center justify-between border-b border-zinc-800 px-3 py-2 text-xs">
+                <span className="font-mono uppercase tracking-wide text-zinc-400">
+                  {languageMatch[1]}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => copyText(codeText, "Code copied")}
+                  className="rounded-md border border-zinc-700 bg-zinc-900 px-2 py-1 text-zinc-300 transition hover:border-emerald-600 hover:text-emerald-300"
+                >
+                  Copy code
+                </button>
+              </div>
+              <SyntaxHighlighter
+                language={languageMatch[1]}
+                style={oneDark}
+                customStyle={{ ...codeBlockStyle, marginBottom: 0 }}
+              >
+                {codeText}
+              </SyntaxHighlighter>
+            </div>
+          );
+        },
+      }}
+    >
+      {content}
+    </ReactMarkdown>
+  );
 
 
   return (
 
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      {toastMessage ? (
+        <div className="fixed right-4 top-20 z-50 rounded-lg border border-emerald-700/70 bg-emerald-500/15 px-3 py-2 text-sm text-emerald-200 shadow-lg backdrop-blur">
+          {toastMessage}
+        </div>
+      ) : null}
 
       {/* MAIN CONTENT */}
       <div className="lg:col-span-3">
 
         {/* TITLE */}
         <h1 className="text-3xl font-bold text-green-400 mb-4">
-          <ReactMarkdown remarkPlugins={[remarkBreaks]}>
-            {note.title}
-          </ReactMarkdown>
+          {renderMarkdown(note.title)}
         </h1>
 
 
         {/* SUMMARY */}
         <div className="text-zinc-400 mb-6">
-          <ReactMarkdown remarkPlugins={[remarkBreaks]}>
-            {note.summary}
-          </ReactMarkdown>
+          {renderMarkdown(note.summary)}
         </div>
 
 
@@ -118,9 +188,7 @@ function NoteDetails() {
             </h2>
 
             <div className="text-zinc-400 mb-6">
-              <ReactMarkdown remarkPlugins={[remarkBreaks]}>
-                {note.concept}
-              </ReactMarkdown>
+              {renderMarkdown(note.concept)}
             </div>
           </>
         )}
@@ -130,31 +198,29 @@ function NoteDetails() {
         {/* PAYLOAD */}
         {note.payload && (
           <>
-            <div className="flex justify-between items-center mb-2">
+            <div className="mb-3 rounded-xl border border-zinc-800 bg-zinc-900/60 p-3">
+              <div className="mb-2 flex items-center justify-between">
+                <h2 id="payload" className="text-xl font-semibold text-green-400">
+                  Quick Payload Box
+                </h2>
 
-              <h2 id="payload" className="text-xl font-semibold text-green-400">
-                Payload
-              </h2>
-
-              <button
-                onClick={copyPayload}
-                className="text-xs bg-zinc-800 px-3 py-1 rounded hover:bg-zinc-700"
-              >
-                Copy
-              </button>
-
+                <button
+                  type="button"
+                  onClick={copyPayload}
+                  className="rounded-md border border-zinc-700 bg-zinc-900 px-3 py-1 text-xs font-medium text-zinc-200 transition hover:border-emerald-600 hover:text-emerald-300"
+                >
+                  Copy Payload
+                </button>
+              </div>
+              <p className="text-xs text-zinc-400">
+                Click to copy the payload instantly.
+              </p>
             </div>
 
             <SyntaxHighlighter
               language="bash"
               style={oneDark}
-              customStyle={{
-                background:"#000000",
-                borderRadius:"10px",
-                padding:"20px",
-                fontSize:"14px",
-                marginBottom:"20px"
-              }}
+              customStyle={codeBlockStyle}
             >
               {note.payload}
             </SyntaxHighlighter>
@@ -172,9 +238,7 @@ function NoteDetails() {
             </h2>
 
             <div className="text-zinc-400 mb-6">
-              <ReactMarkdown remarkPlugins={[remarkBreaks]}>
-                {note.explanation}
-              </ReactMarkdown>
+              {renderMarkdown(note.explanation)}
             </div>
           </>
         )}
@@ -189,9 +253,7 @@ function NoteDetails() {
             </h2>
 
             <div className="text-zinc-400 mb-6">
-              <ReactMarkdown remarkPlugins={[remarkBreaks]}>
-                {note.mitigation}
-              </ReactMarkdown>
+              {renderMarkdown(note.mitigation)}
             </div>
           </>
         )}
@@ -206,9 +268,7 @@ function NoteDetails() {
             </h2>
 
             <div className="text-zinc-400 mb-6">
-              <ReactMarkdown remarkPlugins={[remarkBreaks]}>
-                {note.references}
-              </ReactMarkdown>
+              {renderMarkdown(note.references)}
             </div>
           </>
         )}
