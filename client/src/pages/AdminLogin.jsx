@@ -19,7 +19,7 @@ function AdminLogin() {
       );
 
       navigate("/admin/dashboard");
-    } catch (error) {
+    } catch  {
       alert("Invalid credentials");
     }
   };
